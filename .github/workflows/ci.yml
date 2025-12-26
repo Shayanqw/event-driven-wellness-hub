@@ -1,0 +1,33 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "21"
+
+      - name: API Gateway (Maven) - test
+        working-directory: api-gateway
+        run: mvn -q test
+
+      - name: Event Service (Maven) - test
+        working-directory: event-service
+        run: mvn -q test
+
+      - name: Wellness Resource Service (Gradle) - test
+        working-directory: wellness-resource-service
+        run: ./gradlew test
+
+      - name: Goal Tracking Service (Gradle) - test
+        working-directory: goal-tracking-service
+        run: ./gradlew test

@@ -1,0 +1,79 @@
+{
+  "realm": "wellness-hub",
+  "enabled": true,
+  "displayName": "Wellness Hub Realm",
+  "roles": {
+    "realm": [
+      {
+        "name": "STUDENT",
+        "description": "Student role - can create goals and register for events"
+      },
+      {
+        "name": "STAFF",
+        "description": "Staff role - can manage wellness resources"
+      },
+      {
+        "name": "ADMIN",
+        "description": "Admin role - full access"
+      }
+    ]
+  },
+  "clients": [
+    {
+      "clientId": "wellness-hub-client",
+      "enabled": true,
+      "clientAuthenticatorType": "client-secret",
+      "secret": "wellness-hub-secret",
+      "redirectUris": ["*"],
+      "webOrigins": ["*"],
+      "protocol": "openid-connect",
+      "publicClient": false,
+      "standardFlowEnabled": true,
+      "directAccessGrantsEnabled": true,
+      "serviceAccountsEnabled": true,
+      "authorizationServicesEnabled": true
+    }
+  ],
+  "users": [
+    {
+      "username": "student1",
+      "enabled": true,
+      "email": "student1@gbc.ca",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "student123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["STUDENT"]
+    },
+    {
+      "username": "staff1",
+      "enabled": true,
+      "email": "staff1@gbc.ca",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "staff123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["STAFF"]
+    },
+    {
+      "username": "admin",
+      "enabled": true,
+      "email": "admin@gbc.ca",
+      "credentials": [
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
+      ],
+      "realmRoles": ["ADMIN"]
+    }
+  ]
+}
+

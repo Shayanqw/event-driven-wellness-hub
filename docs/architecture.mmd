@@ -1,0 +1,54 @@
+flowchart LR
+  subgraph Client
+    U[User / Postman / Browser]
+  end
+
+  U -->|HTTP :8092| GW[API Gateway<br/>Spring Cloud Gateway]
+
+  subgraph Auth
+    KC[Keycloak<br/>:8090]
+    KCPG[(Postgres<br/>keycloakdb)]
+    KC --> KCPG
+  end
+
+  GW --> WR[Wellness Resource Service<br/>:8083]
+  GW --> GT[Goal Tracking Service<br/>:8083]
+  GW --> EV[Event Service<br/>:8083]
+
+  subgraph Data
+    WPG[(Postgres wellnessdb)]
+    EPG[(Postgres eventdb)]
+    MDB[(MongoDB goaltrackingdb)]
+    R[(Redis)]
+  end
+
+  WR --> WPG
+  EV --> EPG
+  GT --> MDB
+  GW --> R
+
+  subgraph Streaming
+    ZK[Zookeeper]
+    KF[Kafka]
+    SR[Schema Registry]
+  end
+
+  EV <-->|produce/consume| KF
+  GT <-->|produce/consume| KF
+  KF --> ZK
+  SR --> KF
+
+  subgraph Observability
+    PR[Prometheus]
+    LK[Loki]
+    PT[Promtail]
+    GF[Grafana<br/>:3000]
+  end
+
+  WR -->|/actuator/prometheus| PR
+  GT -->|/actuator/prometheus| PR
+  EV -->|/actuator/prometheus| PR
+  GW -->|/actuator/prometheus| PR
+  PT --> LK
+  PR --> GF
+  LK --> GF

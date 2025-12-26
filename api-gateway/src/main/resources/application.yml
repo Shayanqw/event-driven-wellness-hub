@@ -1,0 +1,85 @@
+server:
+  port: 8080
+
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      routes:
+        # Wellness Resource Service
+        - id: wellness-resource-service
+          uri: ${SPRING_CLOUD_GATEWAY_ROUTES_WELLNESS_URI:http://wellness-resource-service:8083}
+          predicates:
+            - Path=/api/resources/**
+          filters:
+            - StripPrefix=1
+            - name: RequestRateLimiter
+              args:
+                redis-rate-limiter.replenishRate: 10
+                redis-rate-limiter.burstCapacity: 20
+        
+        # Goal Tracking Service
+        - id: goal-tracking-service
+          uri: ${SPRING_CLOUD_GATEWAY_ROUTES_GOALS_URI:http://goal-tracking-service:8083}
+          predicates:
+            - Path=/api/goals/**
+          filters:
+            - StripPrefix=1
+        
+        # Event Service
+        - id: event-service
+          uri: ${SPRING_CLOUD_GATEWAY_ROUTES_EVENTS_URI:http://event-service:8083}
+          predicates:
+            - Path=/api/events/**
+          filters:
+            - StripPrefix=1
+        
+        # Swagger UI Routes - Route to individual service Swagger UIs
+        - id: swagger-wellness
+          uri: ${SPRING_CLOUD_GATEWAY_ROUTES_WELLNESS_URI:http://wellness-resource-service:8083}
+          predicates:
+            - Path=/api/swagger-ui/wellness/**
+          filters:
+            - RewritePath=/api/swagger-ui/wellness/(?<path>.*), /swagger-ui/$\{path}
+        
+        - id: swagger-goals
+          uri: ${SPRING_CLOUD_GATEWAY_ROUTES_GOALS_URI:http://goal-tracking-service:8083}
+          predicates:
+            - Path=/api/swagger-ui/goals/**
+          filters:
+            - RewritePath=/api/swagger-ui/goals/(?<path>.*), /swagger-ui/$\{path}
+        
+        - id: swagger-events
+          uri: ${SPRING_CLOUD_GATEWAY_ROUTES_EVENTS_URI:http://event-service:8083}
+          predicates:
+            - Path=/api/swagger-ui/events/**
+          filters:
+            - RewritePath=/api/swagger-ui/events/(?<path>.*), /swagger-ui/$\{path}
+
+  data:
+    redis:
+      host: ${REDIS_HOST:redis}
+      port: ${REDIS_PORT:6379}
+  
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          jwk-set-uri: ${KEYCLOAK_JWK_SET_URI:http://keycloak:8080/realms/wellness-hub/protocol/openid-connect/certs}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG
+

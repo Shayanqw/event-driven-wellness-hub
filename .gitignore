@@ -1,0 +1,22 @@
+# Java / Maven / Gradle
+target/
+build/
+out/
+*.class
+*.log
+
+# Gradle
+.gradle/
+!gradle/wrapper/gradle-wrapper.jar
+
+# IntelliJ / IDE
+.idea/
+*.iml
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Local env
+.env
+.env.*

@@ -1,0 +1,616 @@
+{
+	"info": {
+		"_postman_id": "wellness-hub-assignment-2",
+		"name": "Assignment 2 - Wellness Hub API",
+		"description": "Complete API collection for Assignment 2 - Wellness Hub microservices",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "1. Authentication",
+			"item": [
+				{
+					"name": "Get Student Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"student_token\", jsonData.access_token);",
+									"    console.log(\"Student token saved\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "client_id",
+									"value": "wellness-hub-client"
+								},
+								{
+									"key": "client_secret",
+									"value": "wellness-hub-secret"
+								},
+								{
+									"key": "username",
+									"value": "student1"
+								},
+								{
+									"key": "password",
+									"value": "student123"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloak_url}}/realms/wellness-hub/protocol/openid-connect/token",
+							"host": ["{{keycloak_url}}"],
+							"path": ["realms", "wellness-hub", "protocol", "openid-connect", "token"]
+						}
+					}
+				},
+				{
+					"name": "Get Staff Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"staff_token\", jsonData.access_token);",
+									"    console.log(\"Staff token saved\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "client_id",
+									"value": "wellness-hub-client"
+								},
+								{
+									"key": "client_secret",
+									"value": "wellness-hub-secret"
+								},
+								{
+									"key": "username",
+									"value": "staff1"
+								},
+								{
+									"key": "password",
+									"value": "staff123"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloak_url}}/realms/wellness-hub/protocol/openid-connect/token",
+							"host": ["{{keycloak_url}}"],
+							"path": ["realms", "wellness-hub", "protocol", "openid-connect", "token"]
+						}
+					}
+				},
+				{
+					"name": "Get Admin Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"admin_token\", jsonData.access_token);",
+									"    console.log(\"Admin token saved\");",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/x-www-form-urlencoded"
+							}
+						],
+						"body": {
+							"mode": "urlencoded",
+							"urlencoded": [
+								{
+									"key": "grant_type",
+									"value": "password"
+								},
+								{
+									"key": "client_id",
+									"value": "wellness-hub-client"
+								},
+								{
+									"key": "client_secret",
+									"value": "wellness-hub-secret"
+								},
+								{
+									"key": "username",
+									"value": "admin"
+								},
+								{
+									"key": "password",
+									"value": "admin123"
+								}
+							]
+						},
+						"url": {
+							"raw": "{{keycloak_url}}/realms/wellness-hub/protocol/openid-connect/token",
+							"host": ["{{keycloak_url}}"],
+							"path": ["realms", "wellness-hub", "protocol", "openid-connect", "token"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "2. Health Checks",
+			"item": [
+				{
+					"name": "API Gateway Health",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/actuator/health",
+							"host": ["{{base_url}}"],
+							"path": ["actuator", "health"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "3. Wellness Resources",
+			"item": [
+				{
+					"name": "Get All Resources",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/resources",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resources"]
+						}
+					}
+				},
+				{
+					"name": "Get Resources by Category",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/resources?category=Fitness",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resources"],
+							"query": [
+								{
+									"key": "category",
+									"value": "Fitness"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Resource (Staff)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{staff_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"New Wellness Resource\",\n  \"description\": \"Description of the resource\",\n  \"category\": \"Mental Health\",\n  \"url\": \"http://example.com/resource\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/resources",
+							"host": ["{{base_url}}"],
+							"path": ["api", "resources"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "4. Goals",
+			"item": [
+				{
+					"name": "Create Goal (Student)",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 200) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"goal_id\", jsonData.id);",
+									"    console.log(\"Goal ID saved: \" + jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"studentId\": \"stu123\",\n  \"title\": \"Complete Assignment 2\",\n  \"description\": \"Finish all requirements\",\n  \"category\": \"Academic\",\n  \"status\": \"ACTIVE\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/goals",
+							"host": ["{{base_url}}"],
+							"path": ["api", "goals"]
+						}
+					}
+				},
+				{
+					"name": "Get All Goals",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/goals",
+							"host": ["{{base_url}}"],
+							"path": ["api", "goals"]
+						}
+					}
+				},
+				{
+					"name": "Get Goal by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/goals/{{goal_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "goals", "{{goal_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Update Goal to COMPLETED (Triggers Kafka)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Complete Assignment 2\",\n  \"description\": \"Finish all requirements\",\n  \"category\": \"Academic\",\n  \"status\": \"COMPLETED\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/goals/{{goal_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "goals", "{{goal_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Resources for Goal (Tests Circuit Breaker)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/goals/{{goal_id}}/resources",
+							"host": ["{{base_url}}"],
+							"path": ["api", "goals", "{{goal_id}}", "resources"]
+						}
+					}
+				},
+				{
+					"name": "Delete Goal",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/goals/{{goal_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "goals", "{{goal_id}}"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "5. Events",
+			"item": [
+				{
+					"name": "Get All Events",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/events",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events"]
+						}
+					}
+				},
+				{
+					"name": "Create Event",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set(\"event_id\", jsonData.id);",
+									"    console.log(\"Event ID saved: \" + jsonData.id);",
+									"}"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{staff_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Fitness Workshop\",\n  \"startsAt\": \"2025-12-10T10:00:00Z\",\n  \"location\": \"Gymnasium\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events"]
+						}
+					}
+				},
+				{
+					"name": "Get Event by ID",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}"]
+						}
+					}
+				},
+				{
+					"name": "Get Resources for Event (Tests Circuit Breaker)",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}/resources",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}", "resources"]
+						}
+					}
+				},
+				{
+					"name": "Register for Event",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							},
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"attendeeName\": \"John Doe\",\n  \"attendeeEmail\": \"john.doe@example.com\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}/registrations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}", "registrations"]
+						}
+					}
+				},
+				{
+					"name": "Get Event Registrations",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{student_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/events/{{event_id}}/registrations",
+							"host": ["{{base_url}}"],
+							"path": ["api", "events", "{{event_id}}", "registrations"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "6. Swagger (Admin Only)",
+			"item": [
+				{
+					"name": "Wellness Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/swagger-ui/wellness/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "swagger-ui", "wellness", ""]
+						}
+					}
+				},
+				{
+					"name": "Goals Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/swagger-ui/goals/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "swagger-ui", "goals", ""]
+						}
+					}
+				},
+				{
+					"name": "Events Swagger UI",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Authorization",
+								"value": "Bearer {{admin_token}}"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/swagger-ui/events/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "swagger-ui", "events", ""]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8092"
+		},
+		{
+			"key": "keycloak_url",
+			"value": "http://localhost:8090"
+		}
+	]
+}
+

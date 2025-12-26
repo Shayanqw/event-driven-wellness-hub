@@ -1,0 +1,60 @@
+server:
+  port: 8083
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/eventdb
+    username: event_user
+    password: password
+  jpa:
+    hibernate:
+      ddl-auto: update
+    open-in-view: false
+    properties:
+      hibernate.jdbc.time_zone: UTC
+
+# Base URL for the external wellness-resource service (overridden in tests)
+resource:
+  base-url: ${RESOURCE_SERVICE_BASE_URL:http://localhost:9099}
+
+# Resilience4J Configuration
+resilience4j:
+  circuitbreaker:
+    instances:
+      resourceService:
+        registerHealthIndicator: true
+        slidingWindowSize: 10
+        minimumNumberOfCalls: 5
+        permittedNumberOfCallsInHalfOpenState: 3
+        automaticTransitionFromOpenToHalfOpenEnabled: true
+        waitDurationInOpenState: 10s
+        failureRateThreshold: 50
+        eventConsumerBufferSize: 10
+  timelimiter:
+    instances:
+      resourceService:
+        timeoutDuration: 5s
+
+# Actuator for metrics
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus,circuitbreakers,circuitbreakerevents
+  metrics:
+    export:
+      prometheus:
+        enabled: true
+
+# Swagger/OpenAPI
+springdoc:
+  api-docs:
+    path: /api-docs
+  swagger-ui:
+    path: /swagger-ui.html
+    enabled: true
+
+logging:
+  level:
+    io.github.resilience4j: DEBUG
+    ca.gbc.comp3095.eventservice: DEBUG
